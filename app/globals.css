@@ -42,3 +42,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+button:focus-visible,
+button:focus {
+  box-shadow: none !important;
+}

@@ -1,14 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { signIn } from "@/lib/auth";
+import { auth, signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
+
+  if (session) return redirect("/");
+  
   return (
     <>
       <div className="h-screen flex flex-col justify-center items-center">
         <div className="flex flex-col space-y-2 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Login</h1>
+          <h2 className="text-3xl font-bold tracking-tight">Login</h2>
           <p className="text-sm text-muted-foreground">
             Get started with our platform
           </p>
