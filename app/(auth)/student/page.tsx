@@ -1,13 +1,13 @@
-import { CalendarDateRangePicker } from "@/components/DateRangePicker";
-import { Overview } from "@/components/Overview";
-import { RecentGrades } from "@/components/RecentGrades";
+import { CalendarDateRangePicker } from "@/components/student/DateRangePicker";
+import { Overview } from "@/components/student/Overview";
+import { RecentGrades } from "@/components/student/RecentGrades";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   return (
     <main>
-      <div className="hidden flex-col md:flex">
+      <div className="flex-col md:flex">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">
