@@ -8,8 +8,8 @@ export const PATCH = auth(async (req: NextRequest, { params }) => {
 
   await prisma.user.update({
     where: { id },
-    data: { role: body.value },
+    data: { classId: body.value },
   });
 
-  return NextResponse.json({ message: "Role updated" });
+  return NextResponse.json({ message: "Class updated" });
 });
