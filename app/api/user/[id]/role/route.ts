@@ -1,8 +1,8 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const PATCH = auth(async (req: NextRequest, { params }) => {
+export const PATCH = auth(async (req, { params }) => {
   const { id } = params as { id: string };
   const body = await req.json();
 

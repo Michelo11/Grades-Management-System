@@ -1,11 +1,11 @@
 "use client";
 
-import { Class, User } from "@prisma/client";
+import { Class } from "@prisma/client";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
-import DialogUser from "../dialogs/DialogUser";
+import DialogClass from "../dialogs/DialogClass";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -23,30 +23,20 @@ import {
   TableRow,
 } from "../ui/table";
 import { useToast } from "../ui/use-toast";
-import SelectClass from "./SelectClass";
-import SelectRole from "./SelectRole";
 
-export default function TableUserComponent({
-  users,
-  classes,
-}: {
-  users: (User & {
-    class: Class | null;
-  })[];
-  classes: Class[];
-}) {
+export default function TableClassComponent({ classes }: { classes: Class[] }) {
   const { toast } = useToast();
   const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
-  const deleteUser = useMutation({
+  const deleteClass = useMutation({
     mutationFn: async (id: string) =>
-      await axios.delete(`/api/user/${id}`).catch((error) => {
+      await axios.delete(`/api/class/${id}`).catch((error) => {
         toast({
           description: error.message,
           variant: "destructive",
         });
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["classes"] }),
   });
 
   return (
@@ -58,44 +48,36 @@ export default function TableUserComponent({
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        <DialogUser title="Add new" />
+        <DialogClass title="Add new" />
       </div>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Class</TableHead>
-            <TableHead>Role</TableHead>
+            <TableHead>Teacher</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
 
-        {users.length === 0 && (
+        {classes.length === 0 && (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
-                No users found
+              <TableCell colSpan={3} className="text-center">
+                No classes found
               </TableCell>
             </TableRow>
           </TableBody>
         )}
 
-        {users
-          .filter((user) =>
-            user.name?.toLowerCase().includes(search.toLowerCase())
+        {classes
+          .filter((classItem) =>
+            classItem.name?.toLowerCase().includes(search.toLowerCase())
           )
-          .map((user) => (
-            <TableBody key={user.id}>
+          .map((classItem) => (
+            <TableBody key={classItem.id}>
               <TableRow>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <SelectClass user={user} classes={classes} />
-                </TableCell>
-                <TableCell>
-                  <SelectRole user={user} />
-                </TableCell>
+                <TableCell>{classItem.name}</TableCell>
+                <TableCell>{classItem.teachers.length}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -105,15 +87,15 @@ export default function TableUserComponent({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-[160px]">
                       <DropdownMenuItem asChild>
-                        <DialogUser
+                        <DialogClass
                           title="Edit"
-                          nameValue={user.name}
-                          emailValue={user.email}
+                          id={classItem.id}
+                          nameValue={classItem.name}
                         />
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => {
-                          deleteUser.mutate(user.id);
+                          deleteClass.mutate(classItem.id);
                         }}
                       >
                         Delete

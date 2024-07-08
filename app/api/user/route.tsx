@@ -1,8 +1,8 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const GET = auth(async (req: NextRequest) => {
+export const GET = auth(async (_) => {
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
     include: { class: true },

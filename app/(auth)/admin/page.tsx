@@ -1,5 +1,6 @@
 "use client";
 
+import TableClass from "@/components/admin/TableClass";
 import TableUser from "@/components/admin/TableUser";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
@@ -38,8 +39,8 @@ export default function Page() {
 
   return (
     <main>
-      <div className="space-y-4 p-8 pt-6">
-        <h2 className="text-3xl font-bold tracking-tight">Admin Dashboard</h2>
+      <div className="p-3 flex flex-col gap-3">
+        <h1>Admin dashboard</h1>
 
         <Tabs defaultValue="USERS">
           <TabsList>
@@ -50,7 +51,7 @@ export default function Page() {
             {users && classes && <TableUser users={users} classes={classes} />}
           </TabsContent>
           <TabsContent value="CLASSES">
-            {/* TODO: Add classes table */}
+            {classes && <TableClass classes={classes} />}
           </TabsContent>
         </Tabs>
       </div>

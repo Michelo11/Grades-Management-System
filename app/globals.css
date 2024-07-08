@@ -43,7 +43,20 @@
   }
 }
 
+input:focus-visible,
 button:focus-visible,
 button:focus {
   box-shadow: none !important;
+}
+
+h1 {
+  @apply text-4xl font-bold;
+}
+
+h3 {
+  @apply text-lg font-semibold;
+}
+
+p {
+  @apply text-base;
 }
