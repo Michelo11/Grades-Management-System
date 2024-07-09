@@ -19,14 +19,10 @@ export default async function MainNav() {
     <div className="border-b">
       <div className="flex items-center justify-between p-3">
         <Link className="flex gap-3 items-center" href="/">
-          <img
-            src="https://michelemanna.me/img/logo.png"
-            alt="Logo"
-            className="rounded-full"
-            width="32"
-            height="32"
-            draggable={false}
-          />
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="https://michelemanna.me/img/logo.png" />
+            <AvatarFallback>{session?.user.name}</AvatarFallback>
+          </Avatar>
           <h3>Grades Management System</h3>
         </Link>
 
@@ -52,7 +48,6 @@ export default async function MainNav() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

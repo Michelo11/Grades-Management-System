@@ -60,3 +60,8 @@ h3 {
 p {
   @apply text-base;
 }
+
+.DropdownMenuContent {
+  width: var(--radix-dropdown-menu-trigger-width);
+  max-height: var(--radix-dropdown-menu-content-available-height);
+}

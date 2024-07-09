@@ -5,6 +5,30 @@ import { NextResponse } from "next/server";
 export const DELETE = auth(async (req, { params }) => {
   const { id } = params as { id: string };
 
+  if (!req.auth?.user)
+    return NextResponse.json(
+      {
+        message: "Unauthorized",
+      },
+      {
+        status: 401,
+      }
+    );
+
+  const user = await prisma.user.findUnique({
+    where: { id: req.auth.user.id },
+  });
+
+  if (user?.role !== "ADMIN")
+    return NextResponse.json(
+      {
+        message: "Unauthorized",
+      },
+      {
+        status: 401,
+      }
+    );
+
   if (req.auth?.user?.id === id)
     return NextResponse.json(
       { message: "You can't delete yourself" },

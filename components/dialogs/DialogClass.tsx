@@ -1,9 +1,10 @@
 "use client";
 
+import { Class, User } from "@prisma/client";
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -25,19 +26,23 @@ type Checked = DropdownMenuCheckboxItemProps["checked"];
 
 export default function DialogClass({
   title,
-  id,
-  nameValue,
+  users,
+  classItem,
 }: {
   title: string;
-  id?: string;
-  nameValue?: string | null;
+  users: User[];
+  classItem?: Class;
 }) {
   const { toast } = useToast();
-  const [name, setName] = useState(nameValue || undefined);
+  const [name, setName] = useState(classItem?.name);
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const manageClass = useMutation({
-    mutationFn: async (data: { id: string; name: string }) =>
+    mutationFn: async (data: {
+      id?: string;
+      name?: string;
+      teachers: string[];
+    }) =>
       await axios.post("/api/class/manage", data).catch((error) => {
         toast({
           description: error.message,
@@ -51,7 +56,7 @@ export default function DialogClass({
     },
   });
 
-  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true);
+  const [teachers, setTeachers] = useState<string[]>(classItem?.teachers || []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -69,7 +74,7 @@ export default function DialogClass({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="flex flex-col gap-4 py-4">
           <Input
             id="name"
             value={name}
@@ -79,20 +84,46 @@ export default function DialogClass({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">Teacher</Button>
+              <Button variant="outline" className="w-full">
+                Teacher
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-full">
-              <DropdownMenuCheckboxItem
-                checked={showStatusBar}
-                onCheckedChange={setShowStatusBar}
-              >
-                John Doe
-              </DropdownMenuCheckboxItem>
+            <DropdownMenuContent className="DropdownMenuContent">
+              {users.filter((user) => user.role === "TEACHER").length === 0 && (
+                <DropdownMenuCheckboxItem disabled className="uppercase">
+                  No teachers found
+                </DropdownMenuCheckboxItem>
+              )}
+
+              {users
+                .filter((user) => user.role === "TEACHER")
+                .map((user) => (
+                  <DropdownMenuCheckboxItem
+                    checked={teachers.includes(user.id) as Checked}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setTeachers((teachers) => [...teachers, user.id]);
+                      } else {
+                        setTeachers((teachers) =>
+                          teachers.filter((id) => id !== user.id)
+                        );
+                      }
+                    }}
+                  >
+                    {user.name}
+                  </DropdownMenuCheckboxItem>
+                ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
         <DialogFooter>
-          <Button onClick={() => {}}>Save</Button>
+          <Button
+            onClick={() => {
+              manageClass.mutate({ id: classItem?.id, name, teachers });
+            }}
+          >
+            Save
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

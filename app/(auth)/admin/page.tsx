@@ -51,7 +51,7 @@ export default function Page() {
             {users && classes && <TableUser users={users} classes={classes} />}
           </TabsContent>
           <TabsContent value="CLASSES">
-            {classes && <TableClass classes={classes} />}
+            {users && classes && <TableClass users={users} classes={classes} />}
           </TabsContent>
         </Tabs>
       </div>

@@ -2,7 +2,7 @@ import MainNav from "@/components/MainNav";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-export default async function AppLayout({
+export default async function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

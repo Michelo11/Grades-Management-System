@@ -71,23 +71,21 @@ export default function TableUserComponent({
           </TableRow>
         </TableHeader>
 
-        {users.length === 0 && (
-          <TableBody>
+        <TableBody>
+          {users.length === 0 && (
             <TableRow>
               <TableCell colSpan={5} className="text-center">
                 No users found
               </TableCell>
             </TableRow>
-          </TableBody>
-        )}
+          )}
 
-        {users
-          .filter((user) =>
-            user.name?.toLowerCase().includes(search.toLowerCase())
-          )
-          .map((user) => (
-            <TableBody key={user.id}>
-              <TableRow>
+          {users
+            .filter((user) =>
+              user.name?.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((user) => (
+              <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>
@@ -122,8 +120,8 @@ export default function TableUserComponent({
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            </TableBody>
-          ))}
+            ))}
+        </TableBody>
       </Table>
     </div>
   );

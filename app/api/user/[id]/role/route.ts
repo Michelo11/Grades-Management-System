@@ -6,6 +6,30 @@ export const PATCH = auth(async (req, { params }) => {
   const { id } = params as { id: string };
   const body = await req.json();
 
+  if (!req.auth?.user)
+    return NextResponse.json(
+      {
+        message: "Unauthorized",
+      },
+      {
+        status: 401,
+      }
+    );
+
+  const user = await prisma.user.findUnique({
+    where: { id: req.auth.user.id },
+  });
+
+  if (user?.role !== "ADMIN")
+    return NextResponse.json(
+      {
+        message: "Unauthorized",
+      },
+      {
+        status: 401,
+      }
+    );
+
   await prisma.user.update({
     where: { id },
     data: { role: body.value },

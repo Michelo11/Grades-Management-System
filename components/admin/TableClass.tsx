@@ -1,6 +1,6 @@
 "use client";
 
-import { Class } from "@prisma/client";
+import { Class, User } from "@prisma/client";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -24,7 +24,13 @@ import {
 } from "../ui/table";
 import { useToast } from "../ui/use-toast";
 
-export default function TableClassComponent({ classes }: { classes: Class[] }) {
+export default function TableClassComponent({
+  classes,
+  users,
+}: {
+  classes: Class[];
+  users: User[];
+}) {
   const { toast } = useToast();
   const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
@@ -43,12 +49,12 @@ export default function TableClassComponent({ classes }: { classes: Class[] }) {
     <div className="flex flex-col gap-3 mt-3">
       <div className="flex justify-between items-center gap-3">
         <Input
-          placeholder="Search users"
+          placeholder="Search classes"
           className="lg:w-1/3 w-full"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        <DialogClass title="Add new" />
+        <DialogClass title="Add new" users={users} />
       </div>
       <Table>
         <TableHeader>
@@ -59,23 +65,21 @@ export default function TableClassComponent({ classes }: { classes: Class[] }) {
           </TableRow>
         </TableHeader>
 
-        {classes.length === 0 && (
-          <TableBody>
+        <TableBody>
+          {classes.length === 0 && (
             <TableRow>
               <TableCell colSpan={3} className="text-center">
                 No classes found
               </TableCell>
             </TableRow>
-          </TableBody>
-        )}
+          )}
 
-        {classes
-          .filter((classItem) =>
-            classItem.name?.toLowerCase().includes(search.toLowerCase())
-          )
-          .map((classItem) => (
-            <TableBody key={classItem.id}>
-              <TableRow>
+          {classes
+            .filter((classItem) =>
+              classItem.name?.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((classItem) => (
+              <TableRow key={classItem.id}>
                 <TableCell>{classItem.name}</TableCell>
                 <TableCell>{classItem.teachers.length}</TableCell>
                 <TableCell>
@@ -89,8 +93,8 @@ export default function TableClassComponent({ classes }: { classes: Class[] }) {
                       <DropdownMenuItem asChild>
                         <DialogClass
                           title="Edit"
-                          id={classItem.id}
-                          nameValue={classItem.name}
+                          classItem={classItem}
+                          users={users}
                         />
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -104,8 +108,8 @@ export default function TableClassComponent({ classes }: { classes: Class[] }) {
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            </TableBody>
-          ))}
+            ))}
+        </TableBody>
       </Table>
     </div>
   );
