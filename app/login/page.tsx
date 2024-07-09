@@ -6,8 +6,8 @@ import { redirect } from "next/navigation";
 export default async function Page() {
   const session = await auth();
 
-  if (session) return redirect("/");
-  
+  if (session?.user) return redirect("/");
+
   return (
     <>
       <div className="h-screen flex flex-col justify-center items-center">

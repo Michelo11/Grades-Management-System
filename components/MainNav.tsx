@@ -19,8 +19,11 @@ export default async function MainNav() {
     <div className="border-b">
       <div className="flex items-center justify-between p-3">
         <Link className="flex gap-3 items-center" href="/">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="https://michelemanna.me/img/logo.png" />
+          <Avatar className="h-8 w-8" draggable={false}>
+            <AvatarImage
+              src="https://michelemanna.me/img/logo.png"
+              draggable={false}
+            />
             <AvatarFallback>{session?.user.name}</AvatarFallback>
           </Avatar>
           <h3>Grades Management System</h3>
@@ -29,8 +32,11 @@ export default async function MainNav() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={session?.user.image || undefined} />
+              <Avatar className="h-8 w-8" draggable={false}>
+                <AvatarImage
+                  src={session?.user.image || undefined}
+                  draggable={false}
+                />
                 <AvatarFallback>{session?.user.name}</AvatarFallback>
               </Avatar>
             </Button>

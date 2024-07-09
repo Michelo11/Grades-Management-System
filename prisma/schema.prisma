@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  classId       String?
-  role          Roles     @default(STUDENT)
-  accounts      Account[]
-  sessions      Session[]
-  grades        Grade[]
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  classId        String?
+  role           Roles     @default(STUDENT)
+  accounts       Account[]
+  sessions       Session[]
+  assignedGrades Grade[]   @relation("teacher")
+  grades         Grade[]   @relation("student")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -77,17 +78,19 @@ model Class {
 }
 
 model Grade {
-  id      String   @id @default(cuid())
-  value   Float
-  userId  String
-  classId String
-  subject Subjects
+  id        String   @id @default(cuid())
+  value     Float
+  userId    String
+  classId   String
+  teacherId String
+  subject   Subjects
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+  teacher User  @relation("teacher", fields: [teacherId], references: [id], onDelete: Cascade)
+  user    User  @relation("student", fields: [userId], references: [id], onDelete: Cascade)
+  class   Class @relation(fields: [classId], references: [id])
 }
 
 enum Roles {

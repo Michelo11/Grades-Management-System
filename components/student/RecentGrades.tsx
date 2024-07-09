@@ -1,62 +1,40 @@
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Grade, User } from "@prisma/client";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-export function RecentGrades() {
+export function RecentGrades({
+  grades,
+}: {
+  grades: (Grade & {
+    teacher: User;
+  })[];
+}) {
+  const recentGrades = grades.slice(0, 5);
+
   return (
-    <div className="space-y-8">
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarFallback>OM</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Olivia Martin</p>
-          <p className="text-sm text-muted-foreground">
-            olivia.martin@email.com
-          </p>
+    <div className="space-y-3">
+      {recentGrades.length === 0 && (
+        <p className="text-sm text-muted-foreground">No grades yet</p>
+      )}
+      {recentGrades.map((grade) => (
+        <div className="flex items-center gap-3" key={grade.id}>
+          <Avatar className="h-8 w-8" draggable={false}>
+            <AvatarImage
+              src={grade.teacher.image || undefined}
+              draggable={false}
+            />
+            <AvatarFallback>{grade.teacher.name}</AvatarFallback>
+          </Avatar>
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">
+              {grade.teacher.name}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {grade.teacher.email}
+            </p>
+          </div>
+          <div className="ml-auto font-medium">{grade.value}</div>
         </div>
-        <div className="ml-auto font-medium">+$1,999.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
-          <AvatarFallback>JL</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Jackson Lee</p>
-          <p className="text-sm text-muted-foreground">jackson.lee@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">+$39.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarFallback>IN</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Isabella Nguyen</p>
-          <p className="text-sm text-muted-foreground">
-            isabella.nguyen@email.com
-          </p>
-        </div>
-        <div className="ml-auto font-medium">+$299.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarFallback>WK</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">William Kim</p>
-          <p className="text-sm text-muted-foreground">will@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">+$99.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarFallback>SD</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Sofia Davis</p>
-          <p className="text-sm text-muted-foreground">sofia.davis@email.com</p>
-        </div>
-        <div className="ml-auto font-medium">+$39.00</div>
-      </div>
+      ))}
     </div>
   );
 }
