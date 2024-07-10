@@ -11,11 +11,8 @@ export default async function Page() {
   return (
     <>
       <div className="h-screen flex flex-col justify-center items-center">
-        <div className="flex flex-col space-y-2 text-center">
-          <h2 className="text-3xl font-bold tracking-tight">Login</h2>
-          <p className="text-sm text-muted-foreground">
-            Get started with our platform
-          </p>
+        <div className="flex flex-col space-y-3 text-center">
+          <h1>Login</h1>
 
           <form
             action={async () => {
@@ -33,7 +30,7 @@ export default async function Page() {
               }
             }}
           >
-            <Button type="submit" className="w-1/2">
+            <Button type="submit" className="w-full">
               GitHub
             </Button>
           </form>

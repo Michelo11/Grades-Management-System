@@ -1,7 +1,5 @@
-import { CalendarDateRangePicker } from "@/components/student/DateRangePicker";
 import { Overview } from "@/components/student/Overview";
 import { RecentGrades } from "@/components/student/RecentGrades";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -42,48 +40,49 @@ async function getGrades(id: string) {
   }
 }
 
-export default async function Home() {
+export default async function Page() {
   const session = await auth();
+
+  if (!session?.user) return redirect("/");
+
   const classItem = await getClass(session!.user.id);
   const grades = await getGrades(session!.user.id);
+  const schoolYear = new Date().getFullYear();
+  const filter = grades.filter(
+    (grade) => schoolYear === grade.createdAt.getFullYear()
+  );
   const average =
-    grades.reduce((acc, grade) => acc + grade.value, 0) / grades.length;
+    filter.reduce((acc, grade) => acc + grade.value, 0) / filter.length;
 
   return (
     <main>
       <div className="flex-col md:flex">
         <div className="flex flex-col gap-3 p-3">
-          <div className="flex items-center justify-between">
-            <h1>Student dashboard</h1>
-            <div className="flex items-center gap-3">
-              <CalendarDateRangePicker />
-              <Button>Download</Button>
-            </div>
-          </div>
+          <h1>Student dashboard</h1>
 
-          <div className="flex gap-3">
-            <Card className="w-1/3">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+          <div className="flex flex-col md:flex-row gap-3">
+            <Card className="w-full">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-medium">
                   Current Class
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <h2>{classItem?.name || "N/A"}</h2>
+                <h2 className="uppercase">{classItem?.name || "n/a"}</h2>
               </CardContent>
             </Card>
-            <Card className="w-1/3">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <Card className="w-full">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-medium">
                   Total Grades
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <h2>{grades.length}</h2>
+                <h2>{filter.length}</h2>
               </CardContent>
             </Card>
-            <Card className="w-1/3">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <Card className="w-full">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-sm font-medium">
                   General Average
                 </CardTitle>
@@ -92,14 +91,25 @@ export default async function Home() {
                 <h2>{average || 0}</h2>
               </CardContent>
             </Card>
+            <Card className="w-full">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                <CardTitle className="text-sm font-medium">
+                  School Year
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <h2>{schoolYear}</h2>
+              </CardContent>
+            </Card>
           </div>
-          <div className="flex gap-3">
+
+          <div className="flex flex-col md:flex-row gap-3">
             <Card className="w-full">
               <CardHeader>
                 <CardTitle>Overview</CardTitle>
               </CardHeader>
               <CardContent>
-                <Overview grades={grades} />
+                <Overview grades={filter} />
               </CardContent>
             </Card>
             <Card className="w-full">
@@ -107,7 +117,7 @@ export default async function Home() {
                 <CardTitle>Recent Grades</CardTitle>
               </CardHeader>
               <CardContent>
-                <RecentGrades grades={grades} />
+                <RecentGrades grades={filter} />
               </CardContent>
             </Card>
           </div>

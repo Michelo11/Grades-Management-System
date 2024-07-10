@@ -8,7 +8,7 @@ export function RecentGrades({
     teacher: User;
   })[];
 }) {
-  const recentGrades = grades.slice(0, 5);
+  const recentGrades = grades.slice(0, 7);
 
   return (
     <div className="space-y-3">
@@ -28,9 +28,7 @@ export function RecentGrades({
             <p className="text-sm font-medium leading-none">
               {grade.teacher.name}
             </p>
-            <p className="text-sm text-muted-foreground">
-              {grade.teacher.email}
-            </p>
+            <p className="text-sm text-muted-foreground">{grade.subject}</p>
           </div>
           <div className="ml-auto font-medium">{grade.value}</div>
         </div>

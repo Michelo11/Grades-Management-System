@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Grade } from "@prisma/client";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
@@ -43,7 +43,7 @@ export function Overview({ grades }: { grades: Grade[] }) {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value: any) => `$${value}`}
+          tickFormatter={(value: any) => value}
         />
         <Bar
           dataKey="total"

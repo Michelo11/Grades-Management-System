@@ -9,6 +9,9 @@ export default async function StudentLayout({
   children: ReactNode;
 }) {
   const session = await auth();
+
+  if (!session?.user) return redirect("/")
+
   const user = await prisma.user.findUnique({
     where: { id: session?.user!.id },
   });

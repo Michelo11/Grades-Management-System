@@ -1,4 +1,5 @@
 import { auth, signOut } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -12,8 +13,17 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
+async function getUser(id: string) {
+  const user = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  return user;
+}
+
 export default async function MainNav() {
   const session = await auth();
+  const user = await getUser(session!.user.id);
 
   return (
     <div className="border-b">
@@ -54,17 +64,35 @@ export default async function MainNav() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              {(user?.role === "STUDENT" && (
+                <>
+                  <DropdownMenuItem>
+                    <Link href="/student">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href="/student/grades">Grades</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href="/student/archive">Archive</Link>
+                  </DropdownMenuItem>
+                </>
+              )) ||
+                (user?.role === "ADMIN" && (
+                  <DropdownMenuItem>
+                    <Link href="/admin">Dashboard</Link>
+                  </DropdownMenuItem>
+                ))}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <form
               action={async () => {
                 "use server";
+
                 await signOut();
               }}
             >
               <button type="submit" className="w-full">
-                <DropdownMenuItem>Log out</DropdownMenuItem>
+                <DropdownMenuItem>Log Out</DropdownMenuItem>
               </button>
             </form>
           </DropdownMenuContent>
