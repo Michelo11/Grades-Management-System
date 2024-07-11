@@ -5,8 +5,10 @@ import { prisma } from "@/lib/prisma";
 async function getGrades(id: string, teacherId: string) {
   const grades = await prisma.grade.findMany({
     where: {
-      classId: id,
       teacherId: teacherId,
+      user: {
+        classId: id,
+      },
     },
     include: {
       user: true,

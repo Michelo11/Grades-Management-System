@@ -51,7 +51,6 @@ export const POST = auth(async (req) => {
       user: { connect: { id: data.user } },
       subject: user.subject as any,
       teacher: { connect: { id: user.id } },
-      class: { connect: { id: user.classId! } },
     },
   });
 

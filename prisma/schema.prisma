@@ -72,7 +72,6 @@ model Class {
   id       String   @id @default(cuid())
   name     String
   teachers String[]
-  grades   Grade[]
   students User[]
 
   createdAt DateTime @default(now())
@@ -83,7 +82,6 @@ model Grade {
   id        String  @id @default(cuid())
   value     Float
   userId    String
-  classId   String
   teacherId String
   subject   Subject
 
@@ -92,7 +90,6 @@ model Grade {
 
   teacher User  @relation("teacher", fields: [teacherId], references: [id], onDelete: Cascade)
   user    User  @relation("student", fields: [userId], references: [id], onDelete: Cascade)
-  class   Class @relation(fields: [classId], references: [id])
 }
 
 enum Role {
