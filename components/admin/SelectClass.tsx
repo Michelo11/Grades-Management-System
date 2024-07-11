@@ -1,7 +1,7 @@
 "use client";
 
 import { Class, User } from "@prisma/client";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import {
   Select,
@@ -22,7 +22,7 @@ export default function SelectClass({
   classes: Class[];
 }) {
   const { toast } = useToast();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const changeClass = useMutation({
     mutationFn: async ({ id, value }: { id: string; value: string }) =>
       await axios

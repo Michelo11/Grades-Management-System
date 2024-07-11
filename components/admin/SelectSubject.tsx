@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import {
   Select,
@@ -12,7 +12,7 @@ import { useToast } from "../ui/use-toast";
 
 export default function SelectSubject({ user }: { user: User }) {
   const { toast } = useToast();
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const changeSubject = useMutation({
     mutationFn: async ({ id, value }: { id: string; value: string }) =>
       await axios

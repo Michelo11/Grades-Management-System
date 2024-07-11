@@ -14,8 +14,8 @@ model User {
   emailVerified  DateTime?
   image          String?
   classId        String?
-  subject        Subjects? @default(MATH)
-  role           Roles     @default(STUDENT)
+  subject        Subject?  @default(MATH)
+  role           Role      @default(STUDENT)
   accounts       Account[]
   sessions       Session[]
   assignedGrades Grade[]   @relation("teacher")
@@ -79,12 +79,12 @@ model Class {
 }
 
 model Grade {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   value     Float
   userId    String
   classId   String
   teacherId String
-  subject   Subjects
+  subject   Subject
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,13 +94,13 @@ model Grade {
   class   Class @relation(fields: [classId], references: [id])
 }
 
-enum Roles {
+enum Role {
   ADMIN
   TEACHER
   STUDENT
 }
 
-enum Subjects {
+enum Subject {
   MATH
   SCIENCE
   HISTORY

@@ -69,6 +69,7 @@ export default function TableUserComponent({
             <TableHead>Class</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Subject</TableHead>
+            <TableHead>Created At</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -76,7 +77,7 @@ export default function TableUserComponent({
         <TableBody>
           {users.length === 0 && (
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
+              <TableCell colSpan={7} className="text-center">
                 No users found
               </TableCell>
             </TableRow>
@@ -103,6 +104,11 @@ export default function TableUserComponent({
                 )) || (
                   <TableCell className="uppercase">Not a teacher</TableCell>
                 )}
+                <TableCell>
+                  <time suppressHydrationWarning>
+                    {user.createdAt.toLocaleString()}
+                  </time>
+                </TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

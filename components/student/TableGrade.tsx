@@ -23,13 +23,14 @@ export default function TableGrade({
             <TableHead>Value</TableHead>
             <TableHead>Subject</TableHead>
             <TableHead>Teacher</TableHead>
+            <TableHead>Created At</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {grades.length === 0 && (
             <TableRow>
-              <TableCell colSpan={3} className="text-center">
+              <TableCell colSpan={4} className="text-center">
                 No grades found
               </TableCell>
             </TableRow>
@@ -40,6 +41,11 @@ export default function TableGrade({
               <TableCell>{grade.value}</TableCell>
               <TableCell>{grade.subject}</TableCell>
               <TableCell>{grade.teacher.name}</TableCell>
+              <TableCell>
+                <time suppressHydrationWarning>
+                  {grade.createdAt.toLocaleString()}
+                </time>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

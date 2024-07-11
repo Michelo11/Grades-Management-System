@@ -2,41 +2,38 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { Grade } from "@prisma/client";
+import { Class } from "@prisma/client";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
-async function getGrades(id: string) {
-  try {
-    const grades = await prisma.grade.findMany({
-      where: {
-        userId: id,
+async function getClasses(id: string) {
+  const classes = await prisma.class.findMany({
+    where: {
+      teachers: {
+        has: id,
       },
-    });
+    },
+  });
 
-    return grades;
-  } catch (error) {
-    redirect(`?error=${error}`);
-  }
+  return classes;
 }
 
 export default async function Page() {
   const session = await auth();
-  const grades = await getGrades(session!.user.id);
+  const classes = await getClasses(session!.user.id);
 
   return (
     <main>
       <div className="flex-col md:flex">
         <div className="flex flex-col gap-3 p-3">
-          <h1>Archive</h1>
+          <h1>Teacher dashboard</h1>
 
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-3 w-full">
-            {grades.length === 0 && (
+            {classes.length === 0 && (
               <div className="text-sm text-muted-foreground">
-                You don't have any grades yet.
+                You don't have any classes yet.
               </div>
             )}
-            {grades.map((grade) => cardComponent({ grade }))}
+            {classes.map((classItem) => cardComponent({ classItem }))}
           </div>
         </div>
       </div>
@@ -44,21 +41,15 @@ export default async function Page() {
   );
 }
 
-const cardComponent = ({ grade }: { grade: Grade }) => {
+const cardComponent = ({ classItem }: { classItem: Class }) => {
   return (
-    <Card key={grade.id}>
+    <Card key={classItem.id}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-sm font-medium">
-          {grade.createdAt.getFullYear()}
-        </CardTitle>
+        <CardTitle className="text-sm font-medium">{classItem.name}</CardTitle>
       </CardHeader>
       <CardContent>
         <Button>
-          <Link
-            href={`/api/grade/download?year=${grade.createdAt.getFullYear()}`}
-          >
-            Download
-          </Link>
+          <Link href={`teacher/class/${classItem.id}`}>View class</Link>
         </Button>
       </CardContent>
     </Card>

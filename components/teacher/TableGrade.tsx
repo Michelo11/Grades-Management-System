@@ -1,11 +1,11 @@
 "use client";
 
-import { Class, User } from "@prisma/client";
+import { Grade, User } from "@prisma/client";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
-import DialogClass from "../dialogs/DialogClass";
+import DialogGrade from "../dialogs/DialogGrade";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -24,68 +24,67 @@ import {
 } from "../ui/table";
 import { useToast } from "../ui/use-toast";
 
-export default function TableClassComponent({
-  classes,
+export default function TableGradeComponent({
+  grades,
   users,
 }: {
-  classes: Class[];
+  grades: (Grade & { user: User })[];
   users: User[];
 }) {
   const { toast } = useToast();
   const [search, setSearch] = useState("");
-  const queryClient = useQueryClient();
-  const deleteClass = useMutation({
+  const deleteGrade = useMutation({
     mutationFn: async (id: string) =>
-      await axios.delete(`/api/class/${id}`).catch((error) => {
+      await axios.delete(`/api/grade/${id}`).catch((error) => {
         toast({
           description: error.message,
           variant: "destructive",
         });
       }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["classes"] }),
+    onSuccess: () => location.reload(),
   });
 
   return (
     <div className="flex flex-col gap-3 mt-3">
       <div className="flex justify-between items-center gap-3">
         <Input
-          placeholder="Search classes"
+          placeholder="Search grades"
           className="lg:w-1/3 w-full"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
-        <DialogClass title="Add new" users={users} />
+        <DialogGrade title="Add new" users={users} />
       </div>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Teacher</TableHead>
+            <TableHead>Value</TableHead>
             <TableHead>Created At</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {classes.length === 0 && (
+          {grades.length === 0 && (
             <TableRow>
               <TableCell colSpan={4} className="text-center">
-                No classes found
+                No grades found
               </TableCell>
             </TableRow>
           )}
 
-          {classes
-            .filter((classItem) =>
-              classItem.name?.toLowerCase().includes(search.toLowerCase())
+          {grades
+            .filter((grade) =>
+              grade.user.name?.toLowerCase().includes(search.toLowerCase())
             )
-            .map((classItem) => (
-              <TableRow key={classItem.id}>
-                <TableCell>{classItem.name}</TableCell>
-                <TableCell>{classItem.teachers.length}</TableCell>
+            .map((grade) => (
+              <TableRow key={grade.id}>
+                <TableCell>{grade.user.name}</TableCell>
+                <TableCell>{grade.value}</TableCell>
                 <TableCell>
                   <time suppressHydrationWarning>
-                    {classItem.createdAt.toLocaleString()}
+                    {grade.createdAt.toLocaleString()}
                   </time>
                 </TableCell>
                 <TableCell>
@@ -97,15 +96,16 @@ export default function TableClassComponent({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-[160px]">
                       <DropdownMenuItem asChild>
-                        <DialogClass
+                        <DialogGrade
                           title="Edit"
-                          classItem={classItem}
+                          userValue={grade.user}
                           users={users}
+                          defaultValue={grade.value}
                         />
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => {
-                          deleteClass.mutate(classItem.id);
+                          deleteGrade.mutate(grade.id);
                         }}
                       >
                         Delete
