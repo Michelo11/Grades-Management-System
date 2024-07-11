@@ -81,7 +81,11 @@ export default async function MainNav() {
                   <DropdownMenuItem>
                     <Link href="/admin">Dashboard</Link>
                   </DropdownMenuItem>
-                ))}
+                )) || (
+                  <DropdownMenuItem>
+                    <Link href="/teacher">Dashboard</Link>
+                  </DropdownMenuItem>
+                )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <form

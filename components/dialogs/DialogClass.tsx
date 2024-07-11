@@ -99,6 +99,7 @@ export default function DialogClass({
                 .filter((user) => user.role === "TEACHER")
                 .map((user) => (
                   <DropdownMenuCheckboxItem
+                    key={user.id}
                     checked={teachers.includes(user.id) as Checked}
                     onCheckedChange={(checked) => {
                       if (checked) {

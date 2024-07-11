@@ -33,7 +33,7 @@ export default async function Page() {
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-3 w-full">
             {grades.length === 0 && (
               <div className="text-sm text-muted-foreground">
-                You don't have any grades yet.
+                You don&apos;t have any grades yet.
               </div>
             )}
             {grades.map((grade) => cardComponent({ grade }))}
