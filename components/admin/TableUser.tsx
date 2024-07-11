@@ -25,6 +25,7 @@ import {
 import { useToast } from "../ui/use-toast";
 import SelectClass from "./SelectClass";
 import SelectRole from "./SelectRole";
+import SelectSubject from "./SelectSubject";
 
 export default function TableUserComponent({
   users,
@@ -67,6 +68,7 @@ export default function TableUserComponent({
             <TableHead>Email</TableHead>
             <TableHead>Class</TableHead>
             <TableHead>Role</TableHead>
+            <TableHead>Subject</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -94,6 +96,13 @@ export default function TableUserComponent({
                 <TableCell>
                   <SelectRole user={user} />
                 </TableCell>
+                {(user.role === "TEACHER" && (
+                  <TableCell>
+                    <SelectSubject user={user} />
+                  </TableCell>
+                )) || (
+                  <TableCell className="uppercase">Not a teacher</TableCell>
+                )}
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
