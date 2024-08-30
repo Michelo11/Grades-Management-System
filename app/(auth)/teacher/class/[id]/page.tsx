@@ -81,7 +81,7 @@ export default async function Page({
               <TableGrade grades={grades} users={users} />
             </TabsContent>
             <TabsContent value="REPORTS">
-              <TableReport reports={reports} />
+              <TableReport reports={reports} users={users} />
             </TabsContent>
           </Tabs>
         </div>

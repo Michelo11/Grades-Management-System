@@ -19,27 +19,33 @@ import {
 import { useToast } from "../ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import DialogReport from "../dialogs/DialogReport";
+import { User } from "@prisma/client";
 
 export default function TableReportComponent({
   reports,
+  users,
 }: {
   reports: { id: string; name: string | null; reports: string[] }[];
+  users: User[];
 }) {
   const { toast } = useToast();
   const deleteReport = useMutation({
-    mutationFn: async (id: string) =>
-      await axios.delete(`/api/user/${id}/report`).catch((error) => {
-        toast({
-          description: error.message,
-          variant: "destructive",
-        });
-      }),
+    mutationFn: async (data: {report: string, user: string}) =>
+      await axios
+        .delete(`/api/user/${data.user}/report?report=${data.report}`)
+        .catch((error) => {
+          toast({
+            description: error.message,
+            variant: "destructive",
+          });
+        }),
     onSuccess: () => location.reload(),
   });
 
   return (
     <div className="flex flex-col gap-3 mt-3">
-      <DialogGrade title="Add new" users={users} />
+      <DialogReport title="Add new" users={users} />
 
       <Table>
         <TableHeader>
@@ -59,38 +65,41 @@ export default function TableReportComponent({
             </TableRow>
           )}
 
-          {reports.map((report) => (
-            <TableRow key={report.id}>
-              <TableCell>{report.name}</TableCell>
-              <TableCell>{report.reports}</TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex h-8 w-8 p-0">
-                      <DotsHorizontalIcon className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-[160px]">
-                    <DropdownMenuItem asChild>
-                      <DialogGrade
-                        title="Edit"
-                        userValue={grade.user}
-                        users={users}
-                        defaultValue={grade.value}
-                      />
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        deleteReport.mutate(report.id);
-                      }}
-                    >
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          ))}
+          {reports.map((student) =>
+            student.reports.map((report, i) => (
+              <TableRow key={student.id + "-" + report}>
+                <TableCell>{student.name}</TableCell>
+                <TableCell>{report}</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="flex h-8 w-8 p-0">
+                        <DotsHorizontalIcon className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-[160px]">
+                      <DropdownMenuItem asChild>
+                        <DialogReport
+                          title="Edit"
+                          userValue={student.id}
+                          users={users}
+                          defaultValue={report}
+                          id={i}
+                        />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          deleteReport.mutate({ report, user: student.id });
+                        }}
+                      >
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>
