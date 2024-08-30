@@ -1,4 +1,6 @@
 import TableGrade from "@/components/teacher/TableGrade";
+import TableReport from "@/components/teacher/TableReport";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -38,6 +40,21 @@ async function getUsers(id: string) {
   return users;
 }
 
+async function getReports(id: string) {
+  const students = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      reports: true,
+    },
+    where: {
+      classId: id,
+    },
+  });
+
+  return students;
+}
+
 export default async function Page({
   params: { id },
 }: {
@@ -47,6 +64,7 @@ export default async function Page({
   const grades = await getGrades(id, session!.user.id);
   const classItem = await getClass(id);
   const users = await getUsers(id);
+  const reports = await getReports(id);
 
   return (
     <main>
@@ -54,7 +72,18 @@ export default async function Page({
         <div className="flex flex-col gap-3 p-3">
           <h1>{classItem?.name} dashboard</h1>
 
-          <TableGrade grades={grades} users={users} />
+          <Tabs defaultValue="GRADES">
+            <TabsList>
+              <TabsTrigger value="GRADES">Grades</TabsTrigger>
+              <TabsTrigger value="REPORTS">Reports</TabsTrigger>
+            </TabsList>
+            <TabsContent value="GRADES">
+              <TableGrade grades={grades} users={users} />
+            </TabsContent>
+            <TabsContent value="REPORTS">
+              <TableReport reports={reports} />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </main>

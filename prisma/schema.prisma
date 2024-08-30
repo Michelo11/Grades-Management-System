@@ -15,6 +15,7 @@ model User {
   emailVerified  DateTime?
   image          String?
   classId        String?
+  reports        String[]
   subject        Subject?  @default(MATH)
   role           Role      @default(STUDENT)
   accounts       Account[]
